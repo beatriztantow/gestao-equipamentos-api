@@ -1,7 +1,13 @@
 FROM node:20
 
-RUN apt-get update && apt-get install -y postgresql-client
+ENV NODE_ENV=production
+ENV POSTGRES_HOST=db
+ENV POSTGRES_PORT=5432
+ENV POSTGRES_USER=userdb
+ENV POSTGRES_PASSWORD=passworddb
+ENV POSTGRES_DB=equipmentdb
 
+RUN apt-get update && apt-get install -y postgresql-client
 
 WORKDIR /workspace
 
