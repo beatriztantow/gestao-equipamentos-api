@@ -1,0 +1,37 @@
+{
+  "name": "Gestao-Equipamentos-API Devcontainer",
+  "dockerComposeFile": "../compose.yml",
+  "service": "app",
+  "workspaceFolder": "/workspace",
+  "shutdownAction": "stopCompose",
+  "customizations": {
+    "vscode": {
+      "settings": {
+        "terminal.integrated.shell.linux": "/bin/sh",
+        "launch": {
+          "configurations": [
+            {
+              "name": "NestJS: Debug",
+              "type": "node",
+              "request": "launch",
+              "runtimeExecutable": "npm",
+              "runtimeArgs": ["run", "start:debug"],
+              "console": "integratedTerminal",
+              "internalConsoleOptions": "neverOpen"
+            }
+          ]
+        },
+        "extensions": [
+          "ms-azuretools.vscode-docker",
+          "dbaeumer.vscode-eslint",
+          "esbenp.prettier-vscode",
+          "vscode-icons-team.vscode-icons",
+          "eamodio.gitlens",
+          "Gruntfuggly.todo-tree",
+          "mechatroner.rainbow-csv",
+          "ms-vscode.vscode-typescript-tslint-plugin"
+        ]
+      }
+    }
+  }
+}

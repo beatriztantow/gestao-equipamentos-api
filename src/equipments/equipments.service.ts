@@ -1,8 +1,9 @@
 import { ConflictException, Injectable } from '@nestjs/common';
 import { Equipment } from './entities/equipment.entity';
-import { Not, Repository } from 'typeorm';
+import { EntityManager, Not, Repository } from 'typeorm';
 import { EquipmentDto } from './dto/equipment.dto';
 import { InjectRepository } from '@nestjs/typeorm';
+import { Checkout } from './entities/checkout.entity';
 
 @Injectable()
 export class EquipmentsService {
@@ -35,7 +36,10 @@ export class EquipmentsService {
     return (await this.equipmentRepository.delete(id)).affected > 0;
   }
 
-  private async checkForDuplicates(equipment: Equipment, id?: number): Promise<void> {
+  private async checkForDuplicates(
+    equipment: Equipment,
+    id?: number,
+  ): Promise<void> {
     const query = {};
     if (id) {
       query['id'] = Not(id);
@@ -49,5 +53,32 @@ export class EquipmentsService {
     ) {
       throw new ConflictException('Este equipamento já está cadastrado.');
     }
+  }
+
+  async checkout(checkout: Checkout, manager: EntityManager) {
+    const equipment = await manager.findOne(Equipment, {
+      where: { id: checkout.equipment.id },
+    });
+    if (!equipment) {
+      throw new ConflictException('Equipamento não encontrado.');
+    }
+    equipment.quantity -= checkout.quantity;
+    if (equipment.quantity < 0) {
+      throw new ConflictException(
+        'Não há equipamentos suficientes para essa retirada.',
+      );
+    }
+    return manager.save(equipment);
+  }
+
+  async return(checkout: Checkout, manager: EntityManager) {
+    const equipment = await manager.findOne(Equipment, {
+      where: { id: checkout.equipment.id },
+    });
+    if (!equipment) {
+      throw new ConflictException('Equipamento não encontrado.');
+    }
+    equipment.quantity += checkout.quantity;
+    return manager.save(equipment);
   }
 }

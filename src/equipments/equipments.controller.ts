@@ -1,13 +1,27 @@
-import { Body, Controller, Delete, Get, Param, Post, Put } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Post,
+  Put,
+} from '@nestjs/common';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { EquipmentsService } from './equipments.service';
 import { EquipmentDto } from './dto/equipment.dto';
 import { Equipment } from './entities/equipment.entity';
+import { CheckoutService } from './checkout.service';
+import { CheckoutDto } from './dto/checkout.dto';
+import { Checkout } from './entities/checkout.entity';
 
 @ApiTags('Equipments')
 @Controller('equipments')
 export class EquipmentsController {
-  constructor(private readonly equipmentsService: EquipmentsService) {}
+  constructor(
+    private readonly equipmentsService: EquipmentsService,
+    private readonly checkoutService: CheckoutService,
+  ) {}
 
   @ApiOperation({
     description: 'Cria um novo equipamento.',
@@ -21,7 +35,10 @@ export class EquipmentsController {
     description: 'Atualiza equipamento.',
   })
   @Put(':id')
-  update(@Param('id') id: number, @Body() equipmentDto: EquipmentDto): Promise<boolean> {
+  update(
+    @Param('id') id: number,
+    @Body() equipmentDto: EquipmentDto,
+  ): Promise<boolean> {
     return this.equipmentsService.update(id, equipmentDto);
   }
 
@@ -47,5 +64,21 @@ export class EquipmentsController {
   @Get()
   findAll(): Promise<Equipment[]> {
     return this.equipmentsService.findAll();
+  }
+
+  @ApiOperation({
+    description: 'Cria um novo equipamento.',
+  })
+  @Post('checkout')
+  checkout(@Body() checkoutDto: CheckoutDto): Promise<Checkout> {
+    return this.checkoutService.create(checkoutDto);
+  }
+
+  @ApiOperation({
+    description: 'Cria um novo equipamento.',
+  })
+  @Put('return/:id')
+  returnEquipment(@Param('id') id: number): Promise<Checkout> {
+    return this.checkoutService.returnEquipment(id);
   }
 }

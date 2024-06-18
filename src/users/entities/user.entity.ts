@@ -1,4 +1,11 @@
-import { Entity, Column, PrimaryGeneratedColumn, Unique } from 'typeorm';
+import { Checkout } from 'src/equipments/entities/checkout.entity';
+import {
+  Column,
+  Entity,
+  OneToMany,
+  PrimaryGeneratedColumn,
+  Unique,
+} from 'typeorm';
 import { UserDto } from '../dto/user.dto';
 
 @Entity()
@@ -18,6 +25,13 @@ export class User {
 
   @Column()
   password: string;
+
+  @OneToMany(() => Checkout, (checkout) => checkout.user)
+  checkout: Checkout[];
+
+  constructor(partial?: Partial<User>) {
+    Object.assign(this, partial);
+  }
 
   static fromDTO(userDto: UserDto): User {
     const user = new User();

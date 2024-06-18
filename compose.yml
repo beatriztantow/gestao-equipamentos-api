@@ -18,7 +18,8 @@ services:
       - .:/workspace
     depends_on:
       - db
-    # command: sleep infinity
+    command: sleep infinity # necessáro para rodar como devcontainer.
+
   db:
     container_name: db
     image: postgres:13
